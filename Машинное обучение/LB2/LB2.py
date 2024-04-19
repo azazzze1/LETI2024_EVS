@@ -8,16 +8,15 @@ from sklearn.metrics import silhouette_score
 from sklearn.neighbors import NearestNeighbors
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.decomposition import PCA
 
 # Вариант 134Б 
 
 # ЗАДАНИЕ 1 ---------------------------------------------------------
 
-# dFrameBlobs = pd.read_csv("data\lab2_blobs.csv")
-# dFrameChecker = pd.read_csv("data\lab2_checker.csv")
-# dFrameMoons = pd.read_csv("data\lab2_noisymoons.csv")
-
-# print(dFrameBlobs.describe())
+dFrameBlobs = pd.read_csv("data\lab2_blobs.csv")
+dFrameChecker = pd.read_csv("data\lab2_checker.csv")
+dFrameMoons = pd.read_csv("data\lab2_noisymoons.csv")
 
 # print(dFrameBlobs.head())
 # print(dFrameChecker.head())
@@ -30,17 +29,16 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # sns.scatterplot(dFrameMoons, ax = axs[2], x = "# x", y = "y").set(title="Moons") 
 
 # scaler = MinMaxScaler()
-# scaler = StandardScaler()
+scaler = StandardScaler()
 
+scaler.fit(dFrameBlobs) 
+dFrameBlobsScale = scaler.transform(dFrameBlobs)
 
-# scaler.fit(dFrameBlobs) 
-# dFrameBlobsScale = scaler.transform(dFrameBlobs)
+scaler.fit(dFrameChecker) 
+dFrameCheckerScale = scaler.transform(dFrameChecker)
 
-# scaler.fit(dFrameChecker) 
-# dFrameCheckerScale = scaler.transform(dFrameChecker)
-
-# scaler.fit(dFrameMoons) 
-# dFrameMoonsScale = scaler.transform(dFrameMoons)
+scaler.fit(dFrameMoons) 
+dFrameMoonsScale = scaler.transform(dFrameMoons)
 
 # sns.scatterplot(pd.DataFrame(dFrameBlobsScale, columns=["# x", "y"]), ax = axs[0], x = "# x", y = "y").set(title="Blobs")
 # sns.scatterplot(pd.DataFrame(dFrameCheckerScale, columns=["# x", "y"]), ax = axs[1], x = "# x", y = "y").set(title="Checker")
@@ -49,9 +47,9 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # plt.show()
 
 
-## ЗАДАНИЕ 2 ---------------------------------------------------------
+# ЗАДАНИЕ 2 ---------------------------------------------------------
 
-## Задание 2.1 ----------------
+# Задание 2.1 ----------------
 
 # def ElbowMethod(dataFrame, frameTitle, axIdx):
 #     inertias = {}
@@ -68,7 +66,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # ElbowMethod(dFrameCheckerScale, "Checker", 1) ### 5-7
 # ElbowMethod(dFrameMoonsScale, "Moons", 2) ### 10-14
 
-## Задание 2.2 ----------------
+# Задание 2.2 ----------------
 
 # def SilhouetteMethod(dataFrame, frameTitle, axIdx):
 #     silhouettes = {}
@@ -84,7 +82,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # SilhouetteMethod(dFrameCheckerScale, "Checker", 1) ## 5
 # SilhouetteMethod(dFrameMoonsScale, "Moons", 2) ## 10
 
-## Задание 2.3 ----------------
+# Задание 2.3 ----------------
 
 # kmeansBlobs = KMeans(n_clusters = 5, 
 # 			 init = 'random',
@@ -92,9 +90,9 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 # clustIndexBlobs = kmeansBlobs.fit_predict(dFrameBlobsScale)
 # centersBlobs = kmeansBlobs.cluster_centers_
-# print("clust_index Blobs: ", clustIndexBlobs)
-# print("censters Blobs: ", centersBlobs)
-# print("Blobs inetrion: ", kmeansBlobs.inertia_) 
+# print("clusterIdx Blobs: ", clustIndexBlobs)
+# print("clusterCensters Blobs: ", centersBlobs)
+# print("Inetrion Blobs: ", kmeansBlobs.inertia_)
 
 
 # kmeansChecker = KMeans(n_clusters = 5, 
@@ -103,9 +101,9 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 # clustIndexChecker = kmeansChecker.fit_predict(dFrameCheckerScale)
 # centersChecker = kmeansChecker.cluster_centers_
-# print("clust_index Checker: ", clustIndexChecker)
-# print("censters Checker: ", centersChecker)
-# print("Checker inetrion: ", kmeansChecker.inertia_) 
+# print("clusterIdx Checker: ", clustIndexChecker)
+# print("clusterCensters Checker: ", centersChecker)
+# print("Inetrion Checker: ", kmeansChecker.inertia_)
 
 
 # kmeansMoons = KMeans(n_clusters = 10, 
@@ -114,12 +112,13 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 # clustIndexMoons = kmeansMoons.fit_predict(dFrameMoonsScale)
 # centersMoons = kmeansMoons.cluster_centers_
-# print("clust_index Moons: ", clustIndexMoons)
-# print("censters Moons: ", centersMoons)
-# print("Moons inetrion: ", kmeansMoons.inertia_) 
+# print("clusterIdx Moons: ", clustIndexMoons)
+# print("clusterCensters Moons: ", centersMoons)
+# print("Inetrion Moons: ", kmeansMoons.inertia_)
+
 
  
-## Задание 2.4 ----------------
+# Задание 2.4 ----------------
 
 # dFrameBlobsKmeans = pd.DataFrame(dFrameBlobsScale, columns=["# x", "y"]).assign(cluster=clustIndexBlobs)
 # dFrameCheckerKmeans = pd.DataFrame(dFrameCheckerScale, columns=["# x", "y"]).assign(cluster=clustIndexChecker)
@@ -132,7 +131,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # plt.show()
 
 
-## Задание 2.5 ----------------
+# Задание 2.5 ----------------
 
 # vor = Voronoi(centersBlobs)
 # figa = voronoi_plot_2d(vor, ax=axs[0], show_points = False)
@@ -151,7 +150,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # sns.scatterplot(pd.DataFrame(centersMoons, columns=["# x", "y"]), ax = axs[2], x = "# x", y = "y", marker = "x", color = "black", s = 150)
 
 
-## Задание 2.6 ----------------
+# Задание 2.6 ----------------
 
 # boxFig, boxAxs = plt.subplots(1, 2)
 
@@ -167,7 +166,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # plt.show()
 
 
-## Задание 2.7 ----------------
+# Задание 2.7 ----------------
 
 # def describe27(dFrame): 
 #     clusters = dFrame["cluster"].unique()
@@ -184,11 +183,21 @@ from scipy.cluster.hierarchy import dendrogram, linkage
         
 #         resultX["std #" + str(clusterIdx)] = clustersPoints["# x"].std()
 #         resultY["std #" + str(clusterIdx)] = clustersPoints["y"].std()
+
 #         resultX["min #" + str(clusterIdx)] = clustersPoints["# x"].min()
 #         resultY["min #" + str(clusterIdx)] = clustersPoints["y"].min()
         
 #         resultX["max #" + str(clusterIdx)] = clustersPoints["# x"].max()
 #         resultY["max #" + str(clusterIdx)] = clustersPoints["y"].max()
+
+#         resultX["50% #" + str(clusterIdx)] = clustersPoints["# x"].quantile(0.5)
+#         resultY["50% #" + str(clusterIdx)] = clustersPoints["y"].quantile(0.5)
+
+#         resultX["25% #" + str(clusterIdx)] = clustersPoints["# x"].quantile(0.25)
+#         resultY["25% #" + str(clusterIdx)] = clustersPoints["y"].quantile(0.25)
+
+#         resultX["75% #" + str(clusterIdx)] = clustersPoints["# x"].quantile(0.75)
+#         resultY["75% #" + str(clusterIdx)] = clustersPoints["y"].quantile(0.75)
         
 #     return resultX, resultY
     
@@ -196,11 +205,63 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # descrCheckerX, descrCheckerY = describe27(dFrameCheckerKmeans)
 # descrMoonsX, descrMoonsY = describe27(dFrameMoonsKmeans)
 
-# print(descrCheckerY)
+
+# def descrPrint(describe, title):
+#     for idx in range(int(len(describe)/8)):
+#         addArr = {}
+#         addArr["std"] = describe[f'std #{idx}']
+#         addArr["mean"] = describe[f'mean #{idx}']
+#         addArr["count"] = describe[f'count #{idx}']
+#         print(title, f' cluster #{idx}: ', addArr)
+
+# descrPrint(descrBlobsX, "descrBlobsX")
+# descrPrint(descrBlobsY, "descrBlobsY")
+
+# descrPrint(descrCheckerX, "descrCheckerX")
+# descrPrint(descrCheckerY, "descrCheckerY")
+
+# descrPrint(descrMoonsX, "descrMoonsX")
+# descrPrint(descrMoonsY, "descrMoonsY")
+
+# colors = {
+#     0: "red",
+#     1: "blue",
+#     2: "green",
+#     3: "purple",
+#     4: "orange",
+#     5: "yellow",
+#     6: "brown", 
+#     7: "pink",
+#     8: "grey",
+#     9: "red"
+# }
+
+# def graphDescribe(describe, axIdx):
+#     for idx in range(int(len(describe)/8)):
+#         addArr = []
+#         addArr.append(describe[f'min #{idx}'])
+#         addArr.append(describe[f'max #{idx}'])
+#         addArr.append(describe[f'50% #{idx}'])
+#         addArr.append(describe[f'25% #{idx}'])
+#         addArr.append(describe[f'75% #{idx}'])
+
+#         pdAddArr = pd.DataFrame(addArr, columns=["# x"]).assign(y = [idx]*len(addArr))
+        
+#         sns.scatterplot(pdAddArr, x = "# x", y = "y", ax = boxAxs[axIdx], marker = "x", color = colors[idx], s = 100)
+
+# graphDescribe(descrBlobsX, 0)
+# graphDescribe(descrBlobsY, 1)
+
+# graphDescribe(descrCheckerX, 0)
+# graphDescribe(descrCheckerY, 1)
+
+# graphDescribe(descrMoonsX, 0)
+# graphDescribe(descrMoonsY, 1)
+        
+# plt.show()
 
 
-
-## ЗАДАНИЕ 3 ---------------------------------------------------------
+# ЗАДАНИЕ 3 ---------------------------------------------------------
 
 # def kDistanceGraph(dFrame, dFrameTitle, axIdx):
 #     neigh = NearestNeighbors(n_neighbors = 2)
@@ -210,9 +271,9 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 #     sns.lineplot(distances, ax=axs[axIdx]).set(title=dFrameTitle, ylabel = "Epsilon", xlabel = "Points sorted by distance to neighboor")
     
 
-# kDistanceGraph(dFrameBlobsScale, "Blobs", 0) # 0.09 - 0.15
-# kDistanceGraph(dFrameCheckerScale, "Checker", 1) # 0.10
-# kDistanceGraph(dFrameMoonsScale, "Moons", 2) # 0.15 
+# kDistanceGraph(dFrameBlobsScale, "Blobs", 0) # 0.09 - 0.16
+# kDistanceGraph(dFrameCheckerScale, "Checker", 1) # 0.10 - 0.16
+# kDistanceGraph(dFrameMoonsScale, "Moons", 2) # 0.15 - 0.23
 
 # dbs = DBSCAN(eps=0.15, min_samples=5)
 # clustersBlobs = dbs.fit_predict(dFrameBlobsScale)
@@ -224,7 +285,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # dFrameCheckerKmeans = pd.DataFrame(dFrameCheckerScale, columns=["# x", "y"]).assign(cluster=clustersChecker)
 # sns.scatterplot(dFrameCheckerKmeans, ax = axs[1], x = "# x", y = "y", hue="cluster", palette="Set1").set(title="Checker")
 
-# dbs = DBSCAN(eps=0.20, min_samples=5)
+# dbs = DBSCAN(eps=0.28, min_samples=8)
 # clustersMoons = dbs.fit_predict(dFrameMoonsScale)
 # dFrameMoonsKmeans = pd.DataFrame(dFrameMoonsScale, columns=["# x", "y"]).assign(cluster=clustersMoons)
 # sns.scatterplot(dFrameMoonsKmeans, ax = axs[2], x = "# x", y = "y", hue="cluster", palette="Set1").set(title="Moons")
@@ -232,27 +293,27 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 # plt.show()
 
 
-## ЗАДАНИЕ 4 ---------------------------------------------------------
+# ЗАДАНИЕ 4 ---------------------------------------------------------
 
 # axs[0].set(title="Blobs")
 # axs[1].set(title="Checker")
 # axs[2].set(title="Moons")
 
-# _linkage = "average"
+# _linkage = "single" # "ward", "complete", "single"
 
 # agc = AgglomerativeClustering(5, linkage = _linkage)
 # ag_clust = agc.fit_predict(dFrameBlobsScale)
 # dFrameBlobsAgc = pd.DataFrame(dFrameBlobsScale, columns=["# x", "y"]).assign(cluster=ag_clust)
-# dendrogram(linkage(dFrameBlobsAgc, method=_linkage), ax = axs[0])
+# # dendrogram(linkage(dFrameBlobsAgc, method=_linkage), ax = axs[0])
 # sns.scatterplot(dFrameBlobsAgc, ax = axs[0], x = "# x", y = "y", hue="cluster", palette="Set1").set(title="Blobs")
 
-# agc = AgglomerativeClustering(5, linkage = _linkage)
+# agc = AgglomerativeClustering(4, linkage = _linkage)
 # ag_clust = agc.fit_predict(dFrameCheckerScale)
 # dFrameCheckerAgc = pd.DataFrame(dFrameCheckerScale, columns=["# x", "y"]).assign(cluster=ag_clust)
-# dendrogram(linkage(dFrameCheckerAgc, method=_linkage), ax = axs[1])
+# # dendrogram(linkage(dFrameCheckerAgc, method=_linkage), ax = axs[1])
 # sns.scatterplot(dFrameCheckerAgc, ax = axs[1], x = "# x", y = "y", hue="cluster", palette="Set1").set(title="Checker")
 
-# agc = AgglomerativeClustering(7, linkage = _linkage)
+# agc = AgglomerativeClustering(8, linkage = _linkage)
 # ag_clust = agc.fit_predict(dFrameMoonsScale)
 # dFrameMoonsAgc = pd.DataFrame(dFrameMoonsScale, columns=["# x", "y"]).assign(cluster=ag_clust)
 # dendrogram(linkage(dFrameMoonsAgc, method=_linkage))
@@ -265,21 +326,52 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 dFrameWine = pd.read_csv("data\lab2_winequality_white.csv", sep=";")
 
-# print(dFrameWine.head())
+print(dFrameWine.head())
 
 print(dFrameWine.describe())
-print(dFrameWine.columns.to_list())
 
-fig, axs = plt.subplots(4, 3, sharex='col')
+# sns.pairplot(dFrameWine, hue="quality", palette="Set1")
 
-axIdx = 0
-for column in dFrameWine.columns.to_list(): 
-    sns.histplot(dFrameWine, ax = axs[axIdx], bins=10, x = column, hue="quality", palette="Set1")
-    axIdx+=1
+scaler = MinMaxScaler()
+scaler.fit(dFrameWine) 
+dFrameWineScale = scaler.transform(dFrameWine)
 
-## 
+dFrameWineScale = pd.DataFrame(dFrameWineScale, columns=dFrameWine.columns.to_list())
+print(dFrameWineScale.describe())
 
-# print(dFrameWine.head()) 
+# sns.pairplot(dFrameWineScale, hue="quality", palette="Set1")
 
+# plt.show()
 
+pca = PCA(n_components=6)
+dFrameWinePCA = pca.fit_transform(dFrameWineScale)
+# sns.pairplot(pd.DataFrame(dFrameWinePCA))
 
+# plt.show()
+
+# def SilhouetteMethod(dataFrame, frameTitle):
+#     silhouettes = {}
+
+#     for countClusters in range(2,25):
+#         kmeanModel = KMeans(n_clusters=countClusters)
+        
+#         silhouettes[countClusters] = (silhouette_score(dataFrame, kmeanModel.fit_predict(dataFrame)))
+
+#     sns.lineplot(silhouettes, marker='o').set(title=frameTitle)
+
+# SilhouetteMethod(dFrameWinePCA, "Wine")
+# plt.show()
+
+kmeansBlobs = KMeans(n_clusters = 4, 
+			 init = 'random',
+			 n_init = 10)
+
+clustIndexBlobs = kmeansBlobs.fit_predict(dFrameWinePCA)
+centersBlobs = kmeansBlobs.cluster_centers_
+
+dFrameWineCluster = pd.DataFrame(dFrameWine).assign(cluster=clustIndexBlobs)
+
+# sns.pairplot(dFrameWineCluster,hue="cluster", palette="Set1")
+# plt.show()
+
+print(dFrameWineCluster.groupby('cluster').agg(['count', 'mean', 'std', 'min', 'max']))
