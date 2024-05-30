@@ -1,0 +1,45 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage[OT1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{kpfonts}
+\usepackage[left=3cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
+\linespread{1.5}
+\setlength\parindent{1.5cm}
+\begin{document}
+Входные данные:\\
+N городов: $C_0 = (c_0, \ldots, c_N)$, где каждый город $c_i = \{x_i, y_i, priorety_i\} \\ 
+0 \leq x_i \leq 30 \\ 
+0 \leq y_i \leq 30 \\ 
+priorety_i >= 0$ 
+
+Выходные данные:\\
+$C = (c_{(1)}, \ldots, c_{(N-1)}) :  \forall i \neq j \;\; c_{(i)} \neq c_{(j)}, \;\; \forall i = (1,...,N-1) :  priorety_{(i)} \leq priorety_{(i+1)} $
+
+Метрика:\\
+
+
+
+
+\begin{align}
+   d(c_{(i)}, c_{(i+1)}) = \sqrt{(x_{(i)}-x_{(i+1)})^2 + (y_{(i)}-y_{(i+1)})^2} \\
+   f(C) = \sum_{i = 1}^{N-2}d(c_{(i)}, c_{(i+1)}) + d(c_{0}, c_{(1)}) + d(c_{(N-1)}, c_{0})
+\end{align}
+
+\begin{center}
+ $f(C)\rightarrow \min$
+\end{center}
+
+\begin{align}
+   m(C) = f(C) + \sum_{i = 1}^{N-1}1000000\mathcal{H}(priorety_{(i)} - priorety_{(i+1)}) + \\ +\sum_{i = 0}^{N}d(c_{(i)}, c_{(i+1)})\mathcal{H}(d(c_{(i)}, c_{(i+1)})-5) \rightarrow \min 
+\end{align}
+
+
+$\mathcal{H}$ - функция Хевисайда
+
+
+\end{document}
